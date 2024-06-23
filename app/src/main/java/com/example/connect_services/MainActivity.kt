@@ -65,7 +65,7 @@ fun MyApp() {
 
     ConnectServicesTheme(darkTheme = isDarkTheme) {
         Scaffold(
-            topBar = { TopBar(onToggleTheme = { isDarkTheme = !isDarkTheme }) },
+            topBar = { TopBar(id = R.string.user_list,onToggleTheme = { isDarkTheme = !isDarkTheme }) },
             floatingActionButton = { FAButton() },
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
@@ -94,7 +94,7 @@ val itemsList = listOf(
 )
 
 @Composable
-fun TopBar(onToggleTheme: () -> Unit) {
+fun TopBar(id: Int, onToggleTheme: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -103,7 +103,7 @@ fun TopBar(onToggleTheme: () -> Unit) {
             .padding(16.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.user_list),
+            text = stringResource(id = id),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
