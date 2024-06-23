@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Connect-Services</string>
-    <string name="user_list">Liste des utilisateurs</string>
+    <string name="user_list">Users list</string>
 </resources>

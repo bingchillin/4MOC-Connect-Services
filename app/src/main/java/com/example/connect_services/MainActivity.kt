@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ConnectServicesTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize().padding(top = 20.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 20.dp),
                     topBar = { TopBar() },
                     floatingActionButton = { FAButton() }
                 ) { innerPadding ->
@@ -88,7 +91,7 @@ fun TopBar() {
             .padding(16.dp)
     ) {
         Text(
-            text = "Liste des comptes",
+            text = stringResource(id = R.string.user_list),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
