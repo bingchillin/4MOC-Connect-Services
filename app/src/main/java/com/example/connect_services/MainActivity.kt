@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,9 +28,15 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,19 +53,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ConnectServicesTheme {
-                Scaffold(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 20.dp),
-                    topBar = { TopBar() },
-                    floatingActionButton = { FAButton() }
-                ) { innerPadding ->
-                    Greeting(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            MyApp()
+        }
+    }
+}
+
+@Composable
+fun MyApp() {
+    val isSystemDarkTheme = isSystemInDarkTheme()
+    var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
+
+    ConnectServicesTheme(darkTheme = isDarkTheme) {
+        Scaffold(
+            topBar = { TopBar(onToggleTheme = { isDarkTheme = !isDarkTheme }) },
+            floatingActionButton = { FAButton() },
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            Greeting(
+                modifier = Modifier.padding(innerPadding)
+            )
         }
     }
 }
@@ -80,9 +93,8 @@ val itemsList = listOf(
     ListItem(name = "Item 13", icon = Icons.Default.Person),
 )
 
-@Preview(showBackground = true)
 @Composable
-fun TopBar() {
+fun TopBar(onToggleTheme: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -95,6 +107,12 @@ fun TopBar() {
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
+        IconButton(onClick = onToggleTheme) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Theme button"
+            )
+        }
     }
 }
 
@@ -112,12 +130,11 @@ fun Greeting(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = null,
-                    tint = Color.Red,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(16.dp)
                 )
                 Text(
                     text = item.name,
-                    color = Color.Black,
                     modifier = Modifier.padding(16.dp)
                 )
             }
