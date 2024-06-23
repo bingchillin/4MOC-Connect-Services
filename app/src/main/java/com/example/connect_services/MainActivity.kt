@@ -4,8 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.camera.core.Camera
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,7 +40,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ConnectServicesTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    floatingActionButton = { FAButton() }
+                ) { innerPadding ->
                     Greeting(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -60,7 +64,10 @@ val itemsList = listOf(
     ListItem(name = "Item 7", icon = Icons.Default.Info),
     ListItem(name = "Item 8", icon = Icons.Default.Warning),
     ListItem(name = "Item 9", icon = Icons.Default.Search),
-    ListItem(name = "Item 10", icon = Icons.Default.Favorite)
+    ListItem(name = "Item 10", icon = Icons.Default.Favorite),
+    ListItem(name = "Item 11", icon = Icons.Default.Home),
+    ListItem(name = "Item 12", icon = Icons.Default.Settings),
+    ListItem(name = "Item 13", icon = Icons.Default.Person),
 )
 
 @Composable
@@ -90,6 +97,14 @@ fun Greeting(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun FAButton() {
+    FloatingActionButton(
+        onClick = { /*TODO*/ }
+    ) {
+        Icon(Icons.Filled.Add, "Floating action button.")
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
