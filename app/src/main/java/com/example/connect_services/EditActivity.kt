@@ -54,7 +54,9 @@ fun EditPage() {
         topBar = {
             TopBar(
                 id = R.string.edit_page,
-                onToggleTheme = { isDarkTheme = !isDarkTheme })
+                onToggleTheme = { isDarkTheme = !isDarkTheme },
+                showBackButton = true
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -80,15 +82,21 @@ fun EditContent(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.padding(8.dp))
             DropdownSelectComponent()
             Spacer(modifier = Modifier.weight(1f))
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.weight(1f))
                 ButtonComponent(id = R.string.button_delete, buttonColor = Color.Red)
                 Spacer(modifier = Modifier.padding(8.dp))
-                ButtonComponent(id = R.string.button_cancel, buttonColor = MaterialTheme.colorScheme.secondary)
+                ButtonComponent(
+                    id = R.string.button_cancel,
+                    buttonColor = MaterialTheme.colorScheme.secondary
+                )
                 Spacer(modifier = Modifier.padding(8.dp))
-                ButtonComponent(id = R.string.button_save, buttonColor = MaterialTheme.colorScheme.primary)
+                ButtonComponent(
+                    id = R.string.button_save,
+                    buttonColor = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
@@ -132,7 +140,7 @@ fun DropdownSelectComponent() {
             DropdownMenuItem(
                 text = {
                     Text(text = "Microsoft")
-                       },
+                },
                 onClick = {
                     selectedItem = "Microsoft"
                     isExpanded = false
@@ -161,14 +169,14 @@ fun DropdownSelectComponent() {
 }
 
 @Composable
-fun ButtonComponent(id : Int, buttonColor : Color) {
-     Button(
-         onClick = { /*TODO*/ },
-         shape = MaterialTheme.shapes.extraSmall,
-         colors = ButtonDefaults.buttonColors(
-             containerColor = buttonColor
-         )
-     ) {
-         Text(text = stringResource(id = id))
-     }
+fun ButtonComponent(id: Int, buttonColor: Color) {
+    Button(
+        onClick = { /*TODO*/ },
+        shape = MaterialTheme.shapes.extraSmall,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor
+        )
+    ) {
+        Text(text = stringResource(id = id))
+    }
 }

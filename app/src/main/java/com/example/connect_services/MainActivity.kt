@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.connect_services.ui.theme.ConnectServicesTheme
@@ -65,7 +67,7 @@ fun MyApp() {
 
     ConnectServicesTheme(darkTheme = isDarkTheme) {
         Scaffold(
-            topBar = { TopBar(id = R.string.user_list,onToggleTheme = { isDarkTheme = !isDarkTheme }) },
+            topBar = { TopBar(id = R.string.user_list,onToggleTheme = { isDarkTheme = !isDarkTheme }, showBackButton = false) },
             floatingActionButton = { FAButton() },
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
@@ -94,7 +96,7 @@ val itemsList = listOf(
 )
 
 @Composable
-fun TopBar(id: Int, onToggleTheme: () -> Unit) {
+fun TopBar(id: Int, onToggleTheme: () -> Unit, showBackButton: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -102,10 +104,19 @@ fun TopBar(id: Int, onToggleTheme: () -> Unit) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        if (showBackButton) {
+            IconButton(onClick = onToggleTheme) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back button"
+                )
+            }
+        }
         Text(
             text = stringResource(id = id),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
+            modifier = Modifier.weight(1f)
         )
         IconButton(onClick = onToggleTheme) {
             Icon(
