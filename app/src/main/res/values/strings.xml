@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Connect-Services</string>
-    <string name="user_list">Liste des utilisateurs</string>
+    <string name="title_activity_create_account" translatable="false">CreateAccountActivity</string>
+
+    <string name="account_list">Liste des Compte</string>
     <string name="edit_page">Modifier un utilisateur</string>
 
     <string name="user_id">Identifiant</string>
@@ -10,4 +12,8 @@
     <string name="button_save">Enregistrer</string>
     <string name="button_delete">Supprimer</string>
     <string name="button_cancel">Annuler</string>
+    <string name="add">Ajouter</string>
+
+
+
 </resources>

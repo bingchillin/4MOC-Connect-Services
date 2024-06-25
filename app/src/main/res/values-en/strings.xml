@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Connect-Services</string>
-    <string name="user_list">Users list</string>
+    <string name="account_list">Account list</string>
     <string name="edit_page">Edit user</string>
 
     <string name="user_id">Identifier</string>
@@ -10,4 +10,6 @@
     <string name="button_save">Save</string>
     <string name="button_delete">Delete</string>
     <string name="button_cancel">Cancel</string>
+    <string name="add">Add</string>
+
 </resources>
