@@ -50,7 +50,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.example.connect_services.account.AppDatabase
+import com.example.connect_services.account.user.AccountUser
+import com.example.connect_services.services.ServiceAPI
 import com.example.connect_services.ui.theme.ConnectServicesTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class CreateAccountActivity : ComponentActivity() {
@@ -204,15 +211,37 @@ fun MyForm(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = { onNavigateToCreate() }) {
-                Text(text = "CANCEL")
-            }
+            Button(onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db").build()
+                        val accountUserDao = db.accountUserDao()
+
+                        var accountCreate1 = AccountUser(service = "Google", idService = "a@a.com", password = "aaaa")
+                        var accountCreate2 = AccountUser(service = "Microsoft", idService = "b@b.com", password = "bbbb")
+
+                        val serviceAPI = ServiceAPI()
+                        serviceAPI.insertAccountUser(accountUserDao, accountCreate1)
+                        serviceAPI.insertAccountUser(accountUserDao, accountCreate2)
+
+                        val listAccountUserService = serviceAPI.getAccountUserService(accountUserDao,"Google")
+                        val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
+
+                        println(listAccountUserService)
+                        println("----------------")
+                        println(listAccountUser)
+                    }
+                    onNavigateToCreate()
+                }) {
+                    Text(text = "CANCEL")
+                }
             Button(onClick = { onNavigateToCreate() }) {
                 Text(text = "SAVE")
             }
         }
+
     }
 }
+
 
 
 
