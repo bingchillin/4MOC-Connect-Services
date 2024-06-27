@@ -1,10 +1,12 @@
 package com.example.connect_services
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +42,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,13 +56,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.connect_services.account.AppDatabase
 import com.example.connect_services.account.user.AccountUser
-import com.example.connect_services.components.ButtonComponent
-import com.example.connect_services.components.TextFieldComponent
 import com.example.connect_services.services.ServiceAPI
 import com.example.connect_services.ui.theme.ConnectServicesTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class CreateAccountActivity : ComponentActivity() {
     private val viewModel: MyFormViewModel by viewModels()
@@ -72,13 +74,9 @@ class CreateAccountActivity : ComponentActivity() {
 
         setContent {
             ConnectServicesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) {innerPadding ->
 
-                    CreateAccountActivityScreen(
-                        innerPadding = innerPadding,
-                        viewModel = viewModel,
-                        criteriaViewModel = criteriaViewModel
-                    )
+                    CreateAccountActivityScreen(innerPadding = innerPadding, viewModel = viewModel,  criteriaViewModel = criteriaViewModel)
                 }
 
             }
@@ -86,13 +84,9 @@ class CreateAccountActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
-fun CreateAccountActivityScreen(
-    modifier: Modifier = Modifier,
-    innerPadding: PaddingValues,
-    viewModel: MyFormViewModel,
-    criteriaViewModel: MyCriteriaViewModel
-) {
+fun CreateAccountActivityScreen(modifier: Modifier = Modifier, innerPadding: PaddingValues, viewModel: MyFormViewModel, criteriaViewModel: MyCriteriaViewModel) {
 
     val navController = rememberNavController()
 
@@ -138,11 +132,15 @@ fun MyForm(
     var identityValue: String by rememberSaveable { mutableStateOf(viewModel.identityValue) }
     var passwordValue: String by rememberSaveable { mutableStateOf(viewModel.passwordValue) }
 
+    var serviceError: Boolean by remember { mutableStateOf(false) }
+    var identityError: Boolean by remember { mutableStateOf(false) }
+    var passwordError: Boolean by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()),  // Ajoutez ceci pour rendre la page scrollable
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -163,11 +161,31 @@ fun MyForm(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextFieldComponent(
+            Text(text = "Service:", modifier = Modifier.width(85.dp))
+            TextField(
                 value = serviceValue,
-                label = R.string.service,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = { serviceValue = it })
+                onValueChange = {
+                    serviceValue = it
+                    serviceError = serviceValue.isEmpty()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(
+                        width = if (serviceError) 1.dp else 0.dp,
+                        color = if (serviceError) Color.Red else Color.Transparent
+                    )
+
+
+            )
+            if (serviceError) {
+                Text(
+                    text = "Service est requis",
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
         }
 
         // Identifiant Row
@@ -177,11 +195,29 @@ fun MyForm(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextFieldComponent(
+            Text(text = "Identifiant:", modifier = Modifier.width(85.dp))
+            TextField(
                 value = identityValue,
-                label = R.string.id,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = { identityValue = it })
+                onValueChange = {
+                    identityValue = it
+                    identityError = identityValue.isEmpty()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(
+                        width = if (identityError) 1.dp else 0.dp,
+                        color = if (identityError) Color.Red else Color.Transparent
+                    )
+            )
+            if (identityError) {
+                Text(
+                    text = "Identifiant est requis",
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
         }
 
         // Mot de passe Row
@@ -191,22 +227,37 @@ fun MyForm(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextFieldComponent(
+            Text(text = "Mot de passe:", modifier = Modifier.width(85.dp))
+            TextField(
                 value = passwordValue,
-                label = R.string.user_password,
-                modifier = Modifier.weight(0.8f),
                 onValueChange = {
                     passwordValue = it
-                }
+                    passwordError = passwordValue.isEmpty()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(
+                        width = if (passwordError) 1.dp else 0.dp,
+                        color = if (passwordError) Color.Red else Color.Transparent
+                    )
             )
-            ButtonComponent(
-                id = R.string.button_generate,
-                buttonColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.weight(0.2f),
-                onClick = {
-                    passwordValue = criteriaViewModel.generatePassword()
-                }
-            )
+            if (passwordError) {
+                Text(
+                    text = "Mot de passe est requis",
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+
+
+            Button(onClick = { passwordValue = criteriaViewModel.generatePassword() }) {
+                Text(text = "Générer")
+            }
         }
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -225,39 +276,60 @@ fun MyForm(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db")
-                        .build()
-                    val accountUserDao = db.accountUserDao()
-
-                    var accountCreate1 =
-                        AccountUser(service = "Google", idService = "a@a.com", password = "aaaa")
-                    var accountCreate2 =
-                        AccountUser(service = "Microsoft", idService = "b@b.com", password = "bbbb")
-
-                    val serviceAPI = ServiceAPI()
-                    serviceAPI.insertAccountUser(accountUserDao, accountCreate1)
-                    serviceAPI.insertAccountUser(accountUserDao, accountCreate2)
-
-                    val listAccountUserService =
-                        serviceAPI.getAccountUserService(accountUserDao, "Google")
-                    val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
-
-                    println(listAccountUserService)
-                    println("----------------")
-                    println(listAccountUser)
-                }
-                onNavigateToCreate()
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
             }) {
                 Text(text = "CANCEL")
             }
-            Button(onClick = { onNavigateToCreate() }) {
+            Button(onClick = {
+
+                serviceError = serviceValue.isEmpty()
+                identityError = identityValue.isEmpty()
+                passwordError = passwordValue.isEmpty()
+
+                if (!serviceError && !identityError && !passwordError) {
+
+                    println("1111111111111111111111111111")
+                    println("Service: $serviceValue")
+                    println("Identifiant: $identityValue")
+                    println("Mot de passe: $passwordValue")
+                    println("1111111111111111111111111111")
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val db =
+                            Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db")
+                                .build()
+                        val accountUserDao = db.accountUserDao()
+
+                        var accountCreate1 = AccountUser(
+                            service = serviceValue,
+                            idService = identityValue,
+                            password = passwordValue
+                        )
+
+                        val serviceAPI = ServiceAPI()
+                        serviceAPI.insertAccountUser(accountUserDao, accountCreate1)
+
+                        val listAccountUserService =
+                            serviceAPI.getAccountUserService(accountUserDao, serviceValue)
+                        val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
+
+                        println(listAccountUserService)
+                        println("----------------")
+                        println(listAccountUser)
+                    }
+
+                    onNavigateToCreate()
+                }
+            }) {
                 Text(text = "SAVE")
             }
         }
 
     }
 }
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -274,11 +346,9 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
     var isExpandedS by remember { mutableStateOf(false) }
     var selectedDigitSC by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)) {
         // Length TextField
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -318,9 +388,7 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
                         .fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false }) {
+                ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "majuscule seulement")
@@ -377,9 +445,7 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
                         .fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(
-                    expanded = isExpandedD,
-                    onDismissRequest = { isExpandedD = false }) {
+                ExposedDropdownMenu(expanded = isExpandedD, onDismissRequest = { isExpandedD = false }) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "true")
@@ -426,9 +492,7 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
                         .fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(
-                    expanded = isExpandedS,
-                    onDismissRequest = { isExpandedS = false }) {
+                ExposedDropdownMenu(expanded = isExpandedS, onDismissRequest = { isExpandedS = false }) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "true")
@@ -456,6 +520,8 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
 }
 
 
+
+@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
 
