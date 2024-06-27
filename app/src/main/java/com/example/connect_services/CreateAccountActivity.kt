@@ -53,12 +53,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.connect_services.account.AppDatabase
 import com.example.connect_services.account.user.AccountUser
+import com.example.connect_services.components.ButtonComponent
+import com.example.connect_services.components.TextFieldComponent
 import com.example.connect_services.services.ServiceAPI
 import com.example.connect_services.ui.theme.ConnectServicesTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class CreateAccountActivity : ComponentActivity() {
     private val viewModel: MyFormViewModel by viewModels()
@@ -71,9 +72,13 @@ class CreateAccountActivity : ComponentActivity() {
 
         setContent {
             ConnectServicesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    CreateAccountActivityScreen(innerPadding = innerPadding, viewModel = viewModel,  criteriaViewModel = criteriaViewModel)
+                    CreateAccountActivityScreen(
+                        innerPadding = innerPadding,
+                        viewModel = viewModel,
+                        criteriaViewModel = criteriaViewModel
+                    )
                 }
 
             }
@@ -81,9 +86,13 @@ class CreateAccountActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
-fun CreateAccountActivityScreen(modifier: Modifier = Modifier, innerPadding: PaddingValues, viewModel: MyFormViewModel, criteriaViewModel: MyCriteriaViewModel) {
+fun CreateAccountActivityScreen(
+    modifier: Modifier = Modifier,
+    innerPadding: PaddingValues,
+    viewModel: MyFormViewModel,
+    criteriaViewModel: MyCriteriaViewModel
+) {
 
     val navController = rememberNavController()
 
@@ -154,12 +163,11 @@ fun MyForm(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Service:", modifier = Modifier.width(85.dp))
-            TextField(
+            TextFieldComponent(
                 value = serviceValue,
-                onValueChange = { serviceValue = it },
-                modifier = Modifier.weight(1f)
-            )
+                label = R.string.service,
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { serviceValue = it })
         }
 
         // Identifiant Row
@@ -169,12 +177,11 @@ fun MyForm(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Identifiant:", modifier = Modifier.width(85.dp))
-            TextField(
+            TextFieldComponent(
                 value = identityValue,
-                onValueChange = { identityValue = it },
-                modifier = Modifier.weight(1f)
-            )
+                label = R.string.id,
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { identityValue = it })
         }
 
         // Mot de passe Row
@@ -184,16 +191,22 @@ fun MyForm(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Mot de passe:", modifier = Modifier.width(85.dp))
-            TextField(
+            TextFieldComponent(
                 value = passwordValue,
-                onValueChange = { passwordValue = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.weight(1f)
+                label = R.string.user_password,
+                modifier = Modifier.weight(0.8f),
+                onValueChange = {
+                    passwordValue = it
+                }
             )
-            Button(onClick = { passwordValue = criteriaViewModel.generatePassword() }) {
-                Text(text = "Générer")
-            }
+            ButtonComponent(
+                id = R.string.button_generate,
+                buttonColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.weight(0.2f),
+                onClick = {
+                    passwordValue = criteriaViewModel.generatePassword()
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -212,28 +225,32 @@ fun MyForm(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db").build()
-                        val accountUserDao = db.accountUserDao()
+                CoroutineScope(Dispatchers.IO).launch {
+                    val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db")
+                        .build()
+                    val accountUserDao = db.accountUserDao()
 
-                        var accountCreate1 = AccountUser(service = "Google", idService = "a@a.com", password = "aaaa")
-                        var accountCreate2 = AccountUser(service = "Microsoft", idService = "b@b.com", password = "bbbb")
+                    var accountCreate1 =
+                        AccountUser(service = "Google", idService = "a@a.com", password = "aaaa")
+                    var accountCreate2 =
+                        AccountUser(service = "Microsoft", idService = "b@b.com", password = "bbbb")
 
-                        val serviceAPI = ServiceAPI()
-                        serviceAPI.insertAccountUser(accountUserDao, accountCreate1)
-                        serviceAPI.insertAccountUser(accountUserDao, accountCreate2)
+                    val serviceAPI = ServiceAPI()
+                    serviceAPI.insertAccountUser(accountUserDao, accountCreate1)
+                    serviceAPI.insertAccountUser(accountUserDao, accountCreate2)
 
-                        val listAccountUserService = serviceAPI.getAccountUserService(accountUserDao,"Google")
-                        val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
+                    val listAccountUserService =
+                        serviceAPI.getAccountUserService(accountUserDao, "Google")
+                    val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
 
-                        println(listAccountUserService)
-                        println("----------------")
-                        println(listAccountUser)
-                    }
-                    onNavigateToCreate()
-                }) {
-                    Text(text = "CANCEL")
+                    println(listAccountUserService)
+                    println("----------------")
+                    println(listAccountUser)
                 }
+                onNavigateToCreate()
+            }) {
+                Text(text = "CANCEL")
+            }
             Button(onClick = { onNavigateToCreate() }) {
                 Text(text = "SAVE")
             }
@@ -241,8 +258,6 @@ fun MyForm(
 
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -259,9 +274,11 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
     var isExpandedS by remember { mutableStateOf(false) }
     var selectedDigitSC by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         // Length TextField
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -301,7 +318,9 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
                         .fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
+                ExposedDropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false }) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "majuscule seulement")
@@ -358,7 +377,9 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
                         .fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(expanded = isExpandedD, onDismissRequest = { isExpandedD = false }) {
+                ExposedDropdownMenu(
+                    expanded = isExpandedD,
+                    onDismissRequest = { isExpandedD = false }) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "true")
@@ -405,7 +426,9 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
                         .fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(expanded = isExpandedS, onDismissRequest = { isExpandedS = false }) {
+                ExposedDropdownMenu(
+                    expanded = isExpandedS,
+                    onDismissRequest = { isExpandedS = false }) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "true")
@@ -433,8 +456,6 @@ fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaV
 }
 
 
-
-@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
 

@@ -32,6 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.connect_services.components.ButtonComponent
+import com.example.connect_services.components.DropdownSelectComponent
+import com.example.connect_services.components.TextFieldComponent
+import com.example.connect_services.components.TopBar
 import com.example.connect_services.ui.theme.ConnectServicesTheme
 
 class EditActivity : ComponentActivity() {
@@ -76,9 +80,17 @@ fun EditContent(modifier: Modifier = Modifier) {
                 .fillMaxHeight()
                 .padding(16.dp)
         ) {
-            TextFieldComponent(value = "", label = R.string.user_id)
+            TextFieldComponent(
+                value = "",
+                label = R.string.user_id,
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { })
             Spacer(modifier = Modifier.padding(8.dp))
-            TextFieldComponent(value = "", label = R.string.user_password)
+            TextFieldComponent(
+                value = "",
+                label = R.string.user_password,
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { })
             Spacer(modifier = Modifier.padding(8.dp))
             DropdownSelectComponent()
             Spacer(modifier = Modifier.weight(1f))
@@ -86,97 +98,26 @@ fun EditContent(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-                ButtonComponent(id = R.string.button_delete, buttonColor = Color.Red)
+                ButtonComponent(
+                    id = R.string.button_delete,
+                    buttonColor = Color.Red,
+                    modifier = modifier,
+                    onClick = { })
                 Spacer(modifier = Modifier.padding(8.dp))
                 ButtonComponent(
                     id = R.string.button_cancel,
-                    buttonColor = MaterialTheme.colorScheme.secondary
+                    buttonColor = MaterialTheme.colorScheme.secondary,
+                    modifier = modifier,
+                    onClick = { }
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 ButtonComponent(
                     id = R.string.button_save,
-                    buttonColor = MaterialTheme.colorScheme.primary
+                    buttonColor = MaterialTheme.colorScheme.primary,
+                    modifier = modifier,
+                    onClick = { }
                 )
             }
         }
-    }
-}
-
-@Composable
-fun TextFieldComponent(value: String, label: Int /*, onValueChange: (String) -> Unit */) {
-    TextField(
-        value = value,
-        label = {
-            Text(text = stringResource(id = label))
-        },
-        onValueChange = { },
-        modifier = Modifier.fillMaxWidth()
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DropdownSelectComponent() {
-    var isExpanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("") }
-
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = it }
-    ) {
-        TextField(
-            value = selectedItem,
-            label = { Text(text = stringResource(id = R.string.user_service)) },
-            onValueChange = { },
-            readOnly = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-
-        ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-            DropdownMenuItem(
-                text = {
-                    Text(text = "Microsoft")
-                },
-                onClick = {
-                    selectedItem = "Microsoft"
-                    isExpanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(text = "Google")
-                },
-                onClick = {
-                    selectedItem = "Google"
-                    isExpanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(text = "Github")
-                },
-                onClick = {
-                    selectedItem = "Github"
-                    isExpanded = false
-                }
-            )
-        }
-    }
-}
-
-@Composable
-fun ButtonComponent(id: Int, buttonColor: Color) {
-    Button(
-        onClick = { /*TODO*/ },
-        shape = MaterialTheme.shapes.extraSmall,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = buttonColor
-        )
-    ) {
-        Text(text = stringResource(id = id))
     }
 }

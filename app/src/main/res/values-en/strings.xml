@@ -11,5 +11,8 @@
     <string name="button_delete">Delete</string>
     <string name="button_cancel">Cancel</string>
     <string name="add">Add</string>
+    <string name="button_generate">Generate</string>
 
+    <string name="service">Service</string>
+    <string name="id">Identifier</string>
 </resources>

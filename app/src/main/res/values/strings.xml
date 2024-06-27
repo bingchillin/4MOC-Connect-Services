@@ -13,7 +13,8 @@
     <string name="button_delete">Supprimer</string>
     <string name="button_cancel">Annuler</string>
     <string name="add">Ajouter</string>
+    <string name="button_generate">Générer</string>
 
-
-
+    <string name="service">Service</string>
+    <string name="id">Identifiant</string>
 </resources>

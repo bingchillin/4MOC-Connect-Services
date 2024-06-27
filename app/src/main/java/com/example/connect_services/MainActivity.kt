@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -53,6 +54,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.connect_services.components.FAButton
+import com.example.connect_services.components.TopBar
 import com.example.connect_services.ui.theme.ConnectServicesTheme
 
 class MainActivity : ComponentActivity() {
@@ -74,11 +77,7 @@ fun MyApp() {
         Scaffold(
             topBar = { TopBar(id = R.string.account_list, onToggleTheme = { isDarkTheme = !isDarkTheme }, showBackButton = false) },
             floatingActionButton = {
-                FAButton(
-                    modifier = Modifier
-                        .padding(25.dp)
-                        .size(80.dp)
-                )
+                FAButton()
             }
         ) { innerPadding ->
             Greeting(
@@ -106,38 +105,6 @@ val itemsList = listOf(
 )
 
 @Composable
-fun TopBar(id: Int, onToggleTheme: () -> Unit, showBackButton: Boolean) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        if (showBackButton) {
-            IconButton(onClick = onToggleTheme) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back button"
-                )
-            }
-        }
-        Text(
-            text = stringResource(id = id),
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            modifier = Modifier.weight(1f)
-        )
-        IconButton(onClick = onToggleTheme) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Theme button"
-            )
-        }
-    }
-}
-
-@Composable
 fun Greeting(modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.fillMaxSize()
@@ -161,27 +128,6 @@ fun Greeting(modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-@Composable
-fun FAButton(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
-    FloatingActionButton(
-        onClick = {
-            val intent = Intent(context, CreateAccountActivity::class.java)
-            context.startActivity(intent)
-        },
-        content = {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_add_24),
-                contentDescription = stringResource(id = R.string.add),
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.scale(1.8f)
-            )
-        },
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
