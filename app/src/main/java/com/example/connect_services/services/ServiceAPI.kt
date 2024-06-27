@@ -8,7 +8,6 @@ import com.example.connect_services.account.user.AccountUserDao
 class ServiceAPI {
 
 
-
     fun insertAccountUser(accountUserDao: AccountUserDao, accountUser: AccountUser) {
         accountUserDao.insert(AccountUser( service = accountUser.service, idService = accountUser.idService, password = accountUser.password))
     }
@@ -19,6 +18,11 @@ class ServiceAPI {
 
     fun getAccountUser(accountUserDao: AccountUserDao): List<AccountUser>? {
         return accountUserDao.getAll()
+    }
+
+    fun getAccountUserServiceId(accountUserDao: AccountUserDao, service: String, identifiant: String): Boolean {
+        val accountUser = accountUserDao.getUserServiceId(service, identifiant)
+        return accountUser != null
     }
 
 

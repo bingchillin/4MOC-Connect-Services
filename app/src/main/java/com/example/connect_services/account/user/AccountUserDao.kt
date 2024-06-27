@@ -25,8 +25,11 @@ interface AccountUserDao {
     @Query("SELECT * FROM AccountUser")
     fun getAll(): List<AccountUser>
 
-    @Query("SELECT * FROM AccountUser WHERE Service=:service LIMIT 1")
-    fun get(service: String): AccountUser?
+    @Query("SELECT * FROM AccountUser WHERE Identifiant=:identifiant LIMIT 1")
+    fun get(identifiant: String): AccountUser?
+
+    @Query("SELECT * FROM AccountUser WHERE Service=:service AND Identifiant=:identifiant LIMIT 1")
+    fun getUserServiceId(service: String, identifiant: String): AccountUser?
 
 
 

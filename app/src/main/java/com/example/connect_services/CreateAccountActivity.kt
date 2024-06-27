@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -136,6 +137,9 @@ fun MyForm(
     var identityError: Boolean by remember { mutableStateOf(false) }
     var passwordError: Boolean by remember { mutableStateOf(false) }
 
+    var serviceIdAlreadyExist: Boolean by remember { mutableStateOf(false) }
+    var showDialog: Boolean by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -151,6 +155,17 @@ fun MyForm(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 20.dp)
         )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        if (serviceIdAlreadyExist) {
+            Text(
+                text = "Ce service avec cet identifiant existe déjà.",
+                color = Color.Red,
+                fontSize = 15.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -178,14 +193,15 @@ fun MyForm(
 
 
             )
-            if (serviceError) {
-                Text(
-                    text = "Service est requis",
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+
+        }
+        if (serviceError) {
+            Text(
+                text = "Service est requis",
+                color = Color.Red,
+                fontSize = 15.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
 
         // Identifiant Row
@@ -210,14 +226,15 @@ fun MyForm(
                         color = if (identityError) Color.Red else Color.Transparent
                     )
             )
-            if (identityError) {
-                Text(
-                    text = "Identifiant est requis",
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+
+        }
+        if (identityError) {
+            Text(
+                text = "Identifiant est requis",
+                color = Color.Red,
+                fontSize = 15.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
 
         // Mot de passe Row
@@ -244,23 +261,25 @@ fun MyForm(
                         color = if (passwordError) Color.Red else Color.Transparent
                     )
             )
-            if (passwordError) {
-                Text(
-                    text = "Mot de passe est requis",
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+
 
 
 
             Button(onClick = { passwordValue = criteriaViewModel.generatePassword() }) {
                 Text(text = "Générer")
             }
+
+        }
+        if (passwordError) {
+            Text(
+                text = "Mot de passe est requis",
+                color = Color.Red,
+                fontSize = 15.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(35.dp))
         Text(text = "Critère du mot de passe:")
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -296,30 +315,60 @@ fun MyForm(
                     println("1111111111111111111111111111")
 
                     CoroutineScope(Dispatchers.IO).launch {
+
+                        serviceIdAlreadyExist = false
+
                         val db =
                             Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db")
                                 .build()
                         val accountUserDao = db.accountUserDao()
 
-                        var accountCreate1 = AccountUser(
-                            service = serviceValue,
-                            idService = identityValue,
-                            password = passwordValue
-                        )
-
                         val serviceAPI = ServiceAPI()
-                        serviceAPI.insertAccountUser(accountUserDao, accountCreate1)
 
-                        val listAccountUserService =
-                            serviceAPI.getAccountUserService(accountUserDao, serviceValue)
-                        val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
+                        val checkUserAccountExist =
+                            serviceAPI.getAccountUserServiceId(accountUserDao, serviceValue, identityValue)
 
-                        println(listAccountUserService)
-                        println("----------------")
-                        println(listAccountUser)
+                        if(!checkUserAccountExist){
+                            showDialog = true
+
+                            var accountCreate = AccountUser(
+                                service = serviceValue,
+                                idService = identityValue,
+                                password = passwordValue
+                            )
+
+                            serviceAPI.insertAccountUser(accountUserDao, accountCreate)
+
+
+                            val listAccountUserService =
+                                serviceAPI.getAccountUserService(accountUserDao, serviceValue)
+                            val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
+
+                            println(listAccountUserService)
+                            println("----------------")
+                            println(listAccountUser)
+
+                            
+                        }else{
+                            serviceIdAlreadyExist = true
+
+
+                            println("Déja present")
+                        }
+
+
+
+
+
+
+
                     }
 
-                    onNavigateToCreate()
+
+
+
+
+
                 }
             }) {
                 Text(text = "SAVE")
