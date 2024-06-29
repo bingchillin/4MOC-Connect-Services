@@ -42,15 +42,18 @@ class EditActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val name = intent.getStringExtra("name") ?: "Default Name"
+        val password = intent.getStringExtra("password") ?: "Default Password"
+        val service = intent.getStringExtra("service") ?: "Default Service"
+
         setContent {
-            EditPage()
+            EditPage(name, password, service)
         }
     }
 }
 
-@Preview
 @Composable
-fun EditPage() {
+fun EditPage(name: String, password: String, service: String) {
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
 
@@ -65,6 +68,9 @@ fun EditPage() {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         EditContent(
+            name = name,
+            password = password,
+            service = service,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -72,7 +78,7 @@ fun EditPage() {
 
 
 @Composable
-fun EditContent(modifier: Modifier = Modifier) {
+fun EditContent(name: String, password: String, service: String, modifier: Modifier = Modifier) {
     ConnectServicesTheme {
         Column(
             modifier
@@ -81,19 +87,23 @@ fun EditContent(modifier: Modifier = Modifier) {
                 .padding(16.dp)
         ) {
             TextFieldComponent(
-                value = "",
+                value = name,
                 label = R.string.user_id,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { })
             Spacer(modifier = Modifier.padding(8.dp))
+
             TextFieldComponent(
-                value = "",
+                value = password,
                 label = R.string.user_password,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { })
             Spacer(modifier = Modifier.padding(8.dp))
-            DropdownSelectComponent()
+
+            DropdownSelectComponent(service)
+
             Spacer(modifier = Modifier.weight(1f))
+
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {

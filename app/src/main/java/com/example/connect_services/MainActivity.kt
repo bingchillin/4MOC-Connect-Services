@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -106,27 +107,39 @@ val itemsList = listOf(
 
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = modifier.fillMaxSize()
     ) {
         items(itemsList) { item ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = item.icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(16.dp)
-                )
-                Text(
-                    text = item.name,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+            ListItemComponent(item = item, onItemClick = {
+                val intent = Intent(context, EditActivity::class.java)
+                intent.putExtra("name", it.name)
+                context.startActivity(intent)
+            })
         }
+    }
+}
+
+@Composable
+fun ListItemComponent(item: ListItem, onItemClick: (ListItem) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onItemClick(item) }
+    ) {
+        Icon(
+            imageVector = item.icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            text = item.name,
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 

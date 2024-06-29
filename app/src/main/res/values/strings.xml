@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Connect-Services</string>
     <string name="title_activity_create_account" translatable="false">CreateAccountActivity</string>
+    <string name="title_activity_edit_account" translatable="false">EditAccountActivity</string>
 
     <string name="account_list">Liste des Compte</string>
     <string name="edit_page">Modifier un utilisateur</string>

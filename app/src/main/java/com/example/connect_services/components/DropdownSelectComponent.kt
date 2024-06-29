@@ -18,9 +18,9 @@ import com.example.connect_services.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownSelectComponent() {
+fun DropdownSelectComponent(currentService : String) {
     var isExpanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("") }
+    var selectedItem by remember { mutableStateOf(currentService) }
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
