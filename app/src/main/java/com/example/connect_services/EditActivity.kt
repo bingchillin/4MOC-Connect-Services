@@ -42,18 +42,18 @@ class EditActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val name = intent.getStringExtra("name") ?: "Default Name"
-        val password = intent.getStringExtra("password") ?: "Default Password"
         val service = intent.getStringExtra("service") ?: "Default Service"
+        val idService = intent.getStringExtra("idService") ?: "Default idService"
+        val password = intent.getStringExtra("password") ?: "Default Password"
 
         setContent {
-            EditPage(name, password, service)
+            EditPage(idService, password, service)
         }
     }
 }
 
 @Composable
-fun EditPage(name: String, password: String, service: String) {
+fun EditPage(idService: String, password: String, service: String) {
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
 
@@ -68,7 +68,7 @@ fun EditPage(name: String, password: String, service: String) {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         EditContent(
-            name = name,
+            idService = idService,
             password = password,
             service = service,
             modifier = Modifier.padding(innerPadding)
@@ -78,7 +78,7 @@ fun EditPage(name: String, password: String, service: String) {
 
 
 @Composable
-fun EditContent(name: String, password: String, service: String, modifier: Modifier = Modifier) {
+fun EditContent(idService: String, password: String, service: String, modifier: Modifier = Modifier) {
     ConnectServicesTheme {
         Column(
             modifier
@@ -87,7 +87,7 @@ fun EditContent(name: String, password: String, service: String, modifier: Modif
                 .padding(16.dp)
         ) {
             TextFieldComponent(
-                value = name,
+                value = idService,
                 label = R.string.user_id,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { })
