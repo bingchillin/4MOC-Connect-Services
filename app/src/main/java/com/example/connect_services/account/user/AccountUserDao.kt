@@ -34,7 +34,7 @@ interface AccountUserDao {
     @Query("SELECT * FROM AccountUser WHERE auid=:auid LIMIT 1")
     fun getUserByAuid(auid: Long): AccountUser?
 
-    @Query("UPDATE AccountUser SET Service=:service, Identifiant=:identifiant, Password=:password WHERE auid=:auid")
-    fun updateUser( auid: Long,service: String, identifiant: String, password: String)
+    @Query("UPDATE AccountUser SET Identifiant=:identifiant, Password=:password, Service=:service WHERE auid=:auid")
+    fun updateUser(auid: Long, identifiant: String, password: String, service: String)
 
 }

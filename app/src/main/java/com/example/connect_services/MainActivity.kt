@@ -42,12 +42,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
+    private var needRefresh = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApp()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (needRefresh) {
+            setContent {
+                MyApp()
+            }
+            needRefresh = false
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        needRefresh = true
     }
 }
 

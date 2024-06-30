@@ -140,7 +140,7 @@ fun EditContent(auid: Long, idService: String, password: String, service: String
                     id = R.string.button_save,
                     buttonColor = MaterialTheme.colorScheme.primary,
                     modifier = modifier,
-                    onClick = { _onSaveClick(context, auid, serviceState, passwordState, idServiceState) }
+                    onClick = { _onSaveClick(context, auid, idServiceState, passwordState, serviceState) }
                 )
             }
         }
@@ -153,11 +153,11 @@ fun _onSaveClick(context: Context, auid: Long, idService: String, password: Stri
         val accountUserDao = db.accountUserDao()
         val serviceAPI = ServiceAPI()
 
-        val checkUser = serviceAPI.getAccountUserByAuid(accountUserDao,auid)
+        val checkUser = serviceAPI.getAccountUserByAuid(accountUserDao, auid)
 
         println(checkUser)
 
-        serviceAPI.updateAccountUserService(accountUserDao, auid, service, idService, password)
+        serviceAPI.updateAccountUserService(accountUserDao, auid, idService, password, service)
     }
 }
 
