@@ -43,19 +43,18 @@ class EditActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val auid = intent.getLongExtra("auid", 0)
-        println("Auid : " + auid)
         val service = intent.getStringExtra("service") ?: "Default Service"
         val idService = intent.getStringExtra("idService") ?: "Default idService"
         val password = intent.getStringExtra("password") ?: "Default Password"
 
         setContent {
-            EditPage(auid,idService, password, service)
+            EditPage(auid, idService, password, service)
         }
     }
 }
 
 @Composable
-fun EditPage(auid: Long,idService: String, password: String, service: String) {
+fun EditPage(auid: Long, idService: String, password: String, service: String) {
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
 
@@ -80,8 +79,12 @@ fun EditPage(auid: Long,idService: String, password: String, service: String) {
 }
 
 @Composable
-fun EditContent(auid: Long,idService: String, password: String, service: String, modifier: Modifier = Modifier) {
+fun EditContent(auid: Long, idService: String, password: String, service: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
+
+    var idServiceState by remember { mutableStateOf(idService) }
+    var passwordState by remember { mutableStateOf(password) }
+    var serviceState by remember { mutableStateOf(service) }
 
     ConnectServicesTheme {
         Column(
@@ -92,24 +95,24 @@ fun EditContent(auid: Long,idService: String, password: String, service: String,
                 .verticalScroll(rememberScrollState())
         ) {
             TextFieldComponent(
-                value = idService,
+                value = idServiceState,
                 label = R.string.user_id,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { })
+                onValueChange = { newValue -> idServiceState = newValue })
             Spacer(modifier = Modifier.padding(8.dp))
 
             TextFieldComponent(
-                value = password,
+                value = passwordState,
                 label = R.string.user_password,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { })
+                onValueChange = { newValue -> passwordState = newValue })
             Spacer(modifier = Modifier.padding(8.dp))
 
             TextFieldComponent(
-                value = service,
+                value = serviceState,
                 label = R.string.service,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { })
+                onValueChange = { newValue -> serviceState = newValue })
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -137,7 +140,7 @@ fun EditContent(auid: Long,idService: String, password: String, service: String,
                     id = R.string.button_save,
                     buttonColor = MaterialTheme.colorScheme.primary,
                     modifier = modifier,
-                    onClick = { _onSaveClick(context,auid,idService, password, service) }
+                    onClick = { _onSaveClick(context, auid, idService, password, service) }
                 )
             }
         }
@@ -150,13 +153,7 @@ fun _onSaveClick(context: Context, auid: Long, idService: String, password: Stri
         val accountUserDao = db.accountUserDao()
         val serviceAPI = ServiceAPI()
 
-        val checkUserAccountExist = serviceAPI.getAccountUserServiceId(accountUserDao, service, idService)
-
-        if(!checkUserAccountExist){
-            serviceAPI.updateAccountUserService(accountUserDao, auid,service,idService,password)
-        }else{
-            print("Erreur de Mise à jour")
-        }
+        serviceAPI.updateAccountUserService(accountUserDao, auid, service, idService, password)
     }
 }
 
