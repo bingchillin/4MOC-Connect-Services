@@ -1,5 +1,6 @@
 package com.example.connect_services
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,10 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.room.Room
+import com.example.connect_services.account.AppDatabase
 import com.example.connect_services.components.ButtonComponent
 import com.example.connect_services.components.TextFieldComponent
 import com.example.connect_services.components.TopBar
+import com.example.connect_services.services.ServiceAPI
 import com.example.connect_services.ui.theme.ConnectServicesTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class EditActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +49,13 @@ class EditActivity : ComponentActivity() {
         val password = intent.getStringExtra("password") ?: "Default Password"
 
         setContent {
-            EditPage(idService, password, service)
+            EditPage(auid,idService, password, service)
         }
     }
 }
 
 @Composable
-fun EditPage(idService: String, password: String, service: String) {
+fun EditPage(auid: Long,idService: String, password: String, service: String) {
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
 
@@ -63,6 +70,7 @@ fun EditPage(idService: String, password: String, service: String) {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         EditContent(
+            auid = auid,
             idService = idService,
             password = password,
             service = service,
@@ -72,7 +80,7 @@ fun EditPage(idService: String, password: String, service: String) {
 }
 
 @Composable
-fun EditContent(idService: String, password: String, service: String, modifier: Modifier = Modifier) {
+fun EditContent(auid: Long,idService: String, password: String, service: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     ConnectServicesTheme {
@@ -129,9 +137,26 @@ fun EditContent(idService: String, password: String, service: String, modifier: 
                     id = R.string.button_save,
                     buttonColor = MaterialTheme.colorScheme.primary,
                     modifier = modifier,
-                    onClick = { }
+                    onClick = { _onSaveClick(context,auid,idService, password, service) }
                 )
             }
         }
     }
 }
+
+fun _onSaveClick(context: Context, auid: Long, idService: String, password: String, service: String){
+    CoroutineScope(Dispatchers.IO).launch {
+        val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db").build()
+        val accountUserDao = db.accountUserDao()
+        val serviceAPI = ServiceAPI()
+
+        val checkUserAccountExist = serviceAPI.getAccountUserServiceId(accountUserDao, service, idService)
+
+        if(!checkUserAccountExist){
+            serviceAPI.updateAccountUserService(accountUserDao, auid,service,idService,password)
+        }else{
+            print("Erreur de Mise à jour")
+        }
+    }
+}
+

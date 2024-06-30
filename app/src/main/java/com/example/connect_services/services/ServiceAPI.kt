@@ -25,7 +25,13 @@ class ServiceAPI {
         return accountUser != null
     }
 
+    fun getAccountUserByAuid(accountUserDao: AccountUserDao, auid: Long): AccountUser? {
+        return accountUserDao.getUserByAuid(auid)
+    }
 
+    fun updateAccountUserService(accountUserDao: AccountUserDao,auid: Long, service: String, identifiant: String, password: String) {
+        accountUserDao.updateUser(auid,service,identifiant,password)
+    }
 
 }
 
