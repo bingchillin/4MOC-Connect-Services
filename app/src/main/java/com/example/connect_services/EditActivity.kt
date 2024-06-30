@@ -1,5 +1,6 @@
 package com.example.connect_services
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,16 +13,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +24,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.connect_services.components.ButtonComponent
-import com.example.connect_services.components.DropdownSelectComponent
 import com.example.connect_services.components.TextFieldComponent
 import com.example.connect_services.components.TopBar
 import com.example.connect_services.ui.theme.ConnectServicesTheme
@@ -42,6 +35,8 @@ class EditActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val auid = intent.getLongExtra("auid", 0)
+        println("Auid : " + auid)
         val service = intent.getStringExtra("service") ?: "Default Service"
         val idService = intent.getStringExtra("idService") ?: "Default idService"
         val password = intent.getStringExtra("password") ?: "Default Password"
@@ -76,15 +71,17 @@ fun EditPage(idService: String, password: String, service: String) {
     }
 }
 
-
 @Composable
 fun EditContent(idService: String, password: String, service: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
     ConnectServicesTheme {
         Column(
             modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             TextFieldComponent(
                 value = idService,
@@ -100,7 +97,11 @@ fun EditContent(idService: String, password: String, service: String, modifier: 
                 onValueChange = { })
             Spacer(modifier = Modifier.padding(8.dp))
 
-            DropdownSelectComponent(service)
+            TextFieldComponent(
+                value = service,
+                label = R.string.service,
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { })
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -118,7 +119,10 @@ fun EditContent(idService: String, password: String, service: String, modifier: 
                     id = R.string.button_cancel,
                     buttonColor = MaterialTheme.colorScheme.secondary,
                     modifier = modifier,
-                    onClick = { }
+                    onClick = {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                    }
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 ButtonComponent(

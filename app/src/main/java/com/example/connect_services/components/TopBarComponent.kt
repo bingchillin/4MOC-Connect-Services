@@ -1,5 +1,6 @@
 package com.example.connect_services.components
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,9 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.connect_services.MainActivity
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun TopBar(id: Int, onToggleTheme: () -> Unit, showBackButton: Boolean) {
+    val context = LocalContext.current
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -28,7 +33,10 @@ fun TopBar(id: Int, onToggleTheme: () -> Unit, showBackButton: Boolean) {
             .padding(16.dp)
     ) {
         if (showBackButton) {
-            IconButton(onClick = onToggleTheme) {
+            IconButton(onClick = {
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back button"
@@ -44,7 +52,7 @@ fun TopBar(id: Int, onToggleTheme: () -> Unit, showBackButton: Boolean) {
         IconButton(onClick = onToggleTheme) {
             Icon(
                 imageVector = Icons.Default.Settings,
-                contentDescription = "Theme button"
+                contentDescription = "Theme button",
             )
         }
     }

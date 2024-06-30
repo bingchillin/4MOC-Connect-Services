@@ -70,7 +70,7 @@ fun MyApp() {
     }
 }
 
-data class ListItem(val service: String, val idService: String, val password: String, val icon: ImageVector)
+data class ListItem(val auid: Long, val service: String, val idService: String, val password: String, val icon: ImageVector)
 
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
@@ -88,6 +88,7 @@ fun Greeting(modifier: Modifier = Modifier) {
 
         listItems = listAccountUser?.map { user ->
             ListItem(
+                auid = user.auid,
                 service = user.service,
                 idService = user.idService,
                 password = user.password,
@@ -102,6 +103,7 @@ fun Greeting(modifier: Modifier = Modifier) {
         items(listItems) { item ->
             ListItemComponent(item = item, onItemClick = { listItem ->
                 val intent = Intent(context, EditActivity::class.java)
+                intent.putExtra("auid", listItem.auid)
                 intent.putExtra("service", listItem.service)
                 intent.putExtra("idService", listItem.idService)
                 intent.putExtra("password", listItem.password)

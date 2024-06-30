@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,21 +17,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -45,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,7 +81,7 @@ class CreateAccountActivity : ComponentActivity() {
 
 
 @Composable
-fun CreateAccountActivityScreen(modifier: Modifier = Modifier, innerPadding: PaddingValues, viewModel: MyFormViewModel, criteriaViewModel: MyCriteriaViewModel) {
+fun CreateAccountActivityScreen(innerPadding: PaddingValues, viewModel: MyFormViewModel, criteriaViewModel: MyCriteriaViewModel) {
 
     val navController = rememberNavController()
 
@@ -97,35 +91,19 @@ fun CreateAccountActivityScreen(modifier: Modifier = Modifier, innerPadding: Pad
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                onNavigateToCreate = { navController.navigate(route = "verifCreate") },
                 viewModel = viewModel,
                 criteriaViewModel = criteriaViewModel
             )
-        }
-        composable("verifCreate") {
-            TestText()
         }
     }
 }
 
 
 @Composable
-fun TestText() {
-    Text(
-        text = "Test",
-        fontSize = 30.sp,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(vertical = 20.dp)
-    )
-}
-
-@Composable
 fun MyForm(
     modifier: Modifier = Modifier,
     viewModel: MyFormViewModel,
-    criteriaViewModel: MyCriteriaViewModel,
-    onNavigateToCreate: () -> Unit
+    criteriaViewModel: MyCriteriaViewModel
 ) {
     val context = LocalContext.current
 
@@ -138,243 +116,232 @@ fun MyForm(
     var passwordError: Boolean by remember { mutableStateOf(false) }
 
     var serviceIdAlreadyExist: Boolean by remember { mutableStateOf(false) }
-    var showDialog: Boolean by remember { mutableStateOf(false) }
+    var serviceIdIsCreate: Boolean by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Text(
-            text = "NOUVEAU COMPTE",
-            fontSize = 30.sp,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(vertical = 20.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        if (serviceIdAlreadyExist) {
-            Text(
-                text = "Ce service avec cet identifiant existe déjà.",
-                color = Color.Red,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Service Row
-        Row(
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .padding(bottom = 80.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            Text(text = "Service:", modifier = Modifier.width(85.dp))
-            TextField(
-                value = serviceValue,
-                onValueChange = {
-                    serviceValue = it
-                    serviceError = serviceValue.isEmpty()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .border(
-                        width = if (serviceError) 1.dp else 0.dp,
-                        color = if (serviceError) Color.Red else Color.Transparent
-                    )
-
-
-            )
-
-        }
-        if (serviceError) {
             Text(
-                text = "Service est requis",
-                color = Color.Red,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-
-        // Identifiant Row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Identifiant:", modifier = Modifier.width(85.dp))
-            TextField(
-                value = identityValue,
-                onValueChange = {
-                    identityValue = it
-                    identityError = identityValue.isEmpty()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .border(
-                        width = if (identityError) 1.dp else 0.dp,
-                        color = if (identityError) Color.Red else Color.Transparent
-                    )
+                text = "NOUVEAU COMPTE",
+                fontSize = 30.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(vertical = 20.dp)
             )
 
-        }
-        if (identityError) {
-            Text(
-                text = "Identifiant est requis",
-                color = Color.Red,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
+            Spacer(modifier = Modifier.height(10.dp))
 
-        // Mot de passe Row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Mot de passe:", modifier = Modifier.width(85.dp))
-            TextField(
-                value = passwordValue,
-                onValueChange = {
-                    passwordValue = it
-                    passwordError = passwordValue.isEmpty()
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .border(
-                        width = if (passwordError) 1.dp else 0.dp,
-                        color = if (passwordError) Color.Red else Color.Transparent
-                    )
-            )
-
-
-
-
-            Button(onClick = { passwordValue = criteriaViewModel.generatePassword() }) {
-                Text(text = "Générer")
+            if (serviceIdAlreadyExist) {
+                serviceIdIsCreate = false
+                Text(
+                    text = "Ce service avec cet identifiant existe déjà.",
+                    color = Color.Red,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+            if (serviceIdIsCreate) {
+                serviceIdAlreadyExist = false
+                Text(
+                    text = "Le service $serviceValue a bien été ajouté.",
+                    color = Color.Green,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
 
-        }
-        if (passwordError) {
-            Text(
-                text = "Mot de passe est requis",
-                color = Color.Red,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(35.dp))
-        Text(text = "Critère du mot de passe:")
+            // Service Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Service:", modifier = Modifier.width(85.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
-        PasswordDetail(Modifier, criteriaViewModel)
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(onClick = {
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
-            }) {
-                Text(text = "CANCEL")
+                TextField(
+                    value = serviceValue,
+                    onValueChange = {
+                        serviceValue = it
+                        serviceError = serviceValue.isEmpty()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .border(
+                            width = if (serviceError) 1.dp else 0.dp,
+                            color = if (serviceError) Color.Red else Color.Transparent
+                        )
+                )
             }
-            Button(onClick = {
+            if (serviceError) {
+                Text(
+                    text = "Service est requis",
+                    color = Color.Red,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
 
-                serviceError = serviceValue.isEmpty()
-                identityError = identityValue.isEmpty()
-                passwordError = passwordValue.isEmpty()
+            // Identifiant Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Identifiant:", modifier = Modifier.width(85.dp))
+                TextField(
+                    value = identityValue,
+                    onValueChange = {
+                        identityValue = it
+                        identityError = identityValue.isEmpty()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .border(
+                            width = if (identityError) 1.dp else 0.dp,
+                            color = if (identityError) Color.Red else Color.Transparent
+                        )
+                )
+            }
+            if (identityError) {
+                Text(
+                    text = "Identifiant est requis",
+                    color = Color.Red,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
 
-                if (!serviceError && !identityError && !passwordError) {
-
-                    println("1111111111111111111111111111")
-                    println("Service: $serviceValue")
-                    println("Identifiant: $identityValue")
-                    println("Mot de passe: $passwordValue")
-                    println("1111111111111111111111111111")
-
-                    CoroutineScope(Dispatchers.IO).launch {
-
-                        serviceIdAlreadyExist = false
-
-                        val db =
-                            Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db")
-                                .build()
-                        val accountUserDao = db.accountUserDao()
-
-                        val serviceAPI = ServiceAPI()
-
-                        val checkUserAccountExist =
-                            serviceAPI.getAccountUserServiceId(accountUserDao, serviceValue, identityValue)
-
-                        if(!checkUserAccountExist){
-                            showDialog = true
-
-                            var accountCreate = AccountUser(
-                                service = serviceValue,
-                                idService = identityValue,
-                                password = passwordValue
-                            )
-
-                            serviceAPI.insertAccountUser(accountUserDao, accountCreate)
-
-
-                            val listAccountUserService =
-                                serviceAPI.getAccountUserService(accountUserDao, serviceValue)
-                            val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
-
-                            println(listAccountUserService)
-                            println("----------------")
-                            println(listAccountUser)
-
-                            
-                        }else{
-                            serviceIdAlreadyExist = true
-
-
-                            println("Déja present")
-                        }
-
-
-
-
-
-
-
-                    }
-
-
-
-
-
-
+            // Mot de passe Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Mot de passe:", modifier = Modifier.width(85.dp))
+                TextField(
+                    value = passwordValue,
+                    onValueChange = {
+                        passwordValue = it
+                        passwordError = passwordValue.isEmpty()
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .border(
+                            width = if (passwordError) 1.dp else 0.dp,
+                            color = if (passwordError) Color.Red else Color.Transparent
+                        )
+                )
+                Button(onClick = { passwordValue = criteriaViewModel.generatePassword() }) {
+                    Text(text = "Générer")
                 }
-            }) {
-                Text(text = "SAVE")
             }
+            if (passwordError) {
+                Text(
+                    text = "Mot de passe est requis",
+                    color = Color.Red,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(35.dp))
+            Text(text = "Critère du mot de passe:")
+
+            Spacer(modifier = Modifier.height(20.dp))
+            PasswordDetail(criteriaViewModel)
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
+        // Buttons at the bottom
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = {
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                }) {
+                    Text(text = "CANCEL")
+                }
+                Button(onClick = {
+
+                    serviceError = serviceValue.isEmpty()
+                    identityError = identityValue.isEmpty()
+                    passwordError = passwordValue.isEmpty()
+
+                    if (!serviceError && !identityError && !passwordError) {
+
+                        println("1111111111111111111111111111")
+                        println("Service: $serviceValue")
+                        println("Identifiant: $identityValue")
+                        println("Mot de passe: $passwordValue")
+                        println("1111111111111111111111111111")
+
+                        CoroutineScope(Dispatchers.IO).launch {
+
+                            serviceIdAlreadyExist = false
+
+                            val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db")
+                                .build()
+                            val accountUserDao = db.accountUserDao()
+
+                            val serviceAPI = ServiceAPI()
+
+                            val checkUserAccountExist = serviceAPI.getAccountUserServiceId(accountUserDao, serviceValue, identityValue)
+
+                            if (!checkUserAccountExist) {
+
+
+                                val accountCreate = AccountUser(
+                                    service = serviceValue,
+                                    idService = identityValue,
+                                    password = passwordValue
+                                )
+
+                                serviceAPI.insertAccountUser(accountUserDao, accountCreate)
+
+                                serviceIdIsCreate = true
+
+                                val listAccountUserService = serviceAPI.getAccountUserService(accountUserDao, serviceValue)
+                                val listAccountUser = serviceAPI.getAccountUser(accountUserDao)
+
+                                println(listAccountUserService)
+                                println("----------------")
+                                println(listAccountUser)
+
+                            } else {
+                                serviceIdAlreadyExist = true
+                                println("Déjà présent")
+                            }
+                        }
+                    }
+                }) {
+                    Text(text = "SAVE")
+                }
+            }
+        }
     }
 }
 
@@ -383,7 +350,7 @@ fun MyForm(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordDetail(modifier: Modifier = Modifier, criteriaViewModel: MyCriteriaViewModel) {
+fun PasswordDetail(criteriaViewModel: MyCriteriaViewModel) {
     var lengthStringValue by remember { mutableStateOf(criteriaViewModel.lengthStringValue.ifEmpty { "8" }) }
 
     var isExpanded by remember { mutableStateOf(false) }
