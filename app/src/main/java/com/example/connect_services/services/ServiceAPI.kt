@@ -31,6 +31,10 @@ class ServiceAPI {
 
     fun updateAccountUserService(accountUserDao: AccountUserDao,auid: Long, service: String, identifiant: String, password: String) {
         accountUserDao.updateUser(auid,service,identifiant,password)
+        println(auid)
+        println(service)
+        println(identifiant)
+        println(password)
     }
 
 }

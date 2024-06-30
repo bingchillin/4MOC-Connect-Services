@@ -140,7 +140,7 @@ fun EditContent(auid: Long, idService: String, password: String, service: String
                     id = R.string.button_save,
                     buttonColor = MaterialTheme.colorScheme.primary,
                     modifier = modifier,
-                    onClick = { _onSaveClick(context, auid, idService, password, service) }
+                    onClick = { _onSaveClick(context, auid, serviceState, passwordState, idServiceState) }
                 )
             }
         }
@@ -152,6 +152,10 @@ fun _onSaveClick(context: Context, auid: Long, idService: String, password: Stri
         val db = Room.databaseBuilder(context, AppDatabase::class.java, "MyAccount.db").build()
         val accountUserDao = db.accountUserDao()
         val serviceAPI = ServiceAPI()
+
+        val checkUser = serviceAPI.getAccountUserByAuid(accountUserDao,auid)
+
+        println(checkUser)
 
         serviceAPI.updateAccountUserService(accountUserDao, auid, service, idService, password)
     }
