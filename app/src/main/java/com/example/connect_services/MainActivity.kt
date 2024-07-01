@@ -1,5 +1,6 @@
 package com.example.connect_services
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -66,23 +67,25 @@ class MainActivity : ComponentActivity() {
         super.onPause()
         needRefresh = true
     }
-}
 
-@Composable
-fun MyApp() {
-    val isSystemDarkTheme = isSystemInDarkTheme()
-    var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
+    @Composable
+    fun MyApp() {
+        var isDarkTheme by remember { mutableStateOf(isDarkTheme(this@MainActivity)) }
 
-    ConnectServicesTheme(darkTheme = isDarkTheme) {
-        Scaffold(
-            topBar = { TopBar(id = R.string.account_list, onToggleTheme = { isDarkTheme = !isDarkTheme }, showBackButton = false) },
-            floatingActionButton = {
-                FAButton()
+        ConnectServicesTheme(darkTheme = isDarkTheme) {
+            Scaffold(
+                topBar = { TopBar(id = R.string.account_list, onToggleTheme = {
+                    isDarkTheme = !isDarkTheme
+                    saveTheme(this@MainActivity, isDarkTheme)
+                }, showBackButton = false) },
+                floatingActionButton = {
+                    FAButton()
+                }
+            ) { innerPadding ->
+                Greeting(
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
-        ) { innerPadding ->
-            Greeting(
-                modifier = Modifier.padding(innerPadding)
-            )
         }
     }
 }
@@ -165,3 +168,14 @@ fun GreetingPreview2() {
     }
 }
 
+fun isDarkTheme(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("theme", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isDarkTheme", false)
+}
+
+fun saveTheme(context: Context, isDarkTheme: Boolean) {
+    val sharedPreferences = context.getSharedPreferences("theme", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("isDarkTheme", isDarkTheme)
+    editor.apply()
+}

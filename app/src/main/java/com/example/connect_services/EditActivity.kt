@@ -59,26 +59,31 @@ class EditActivity : ComponentActivity() {
 
 @Composable
 fun EditPage(auid: Long, idService: String, password: String, service: String) {
-    val isSystemDarkTheme = isSystemInDarkTheme()
-    var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
+    val context = LocalContext.current
+    var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
 
-    Scaffold(
-        topBar = {
-            TopBar(
-                id = R.string.edit_page,
-                onToggleTheme = { isDarkTheme = !isDarkTheme },
-                showBackButton = true
+    ConnectServicesTheme(darkTheme = isDarkTheme) {
+        Scaffold(
+            topBar = {
+                TopBar(
+                    id = R.string.edit_page,
+                    onToggleTheme = {
+                        isDarkTheme = !isDarkTheme
+                        saveTheme(context, isDarkTheme)
+                    },
+                    showBackButton = true
+                )
+            },
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            EditContent(
+                auid = auid,
+                idService = idService,
+                password = password,
+                service = service,
+                modifier = Modifier.padding(innerPadding)
             )
-        },
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        EditContent(
-            auid = auid,
-            idService = idService,
-            password = password,
-            service = service,
-            modifier = Modifier.padding(innerPadding)
-        )
+        }
     }
 }
 

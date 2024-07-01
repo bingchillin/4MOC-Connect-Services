@@ -63,15 +63,16 @@ class CreateAccountActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val isSystemDarkTheme = isSystemInDarkTheme()
-            var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
+            val context = LocalContext.current
+            var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
 
             ConnectServicesTheme(darkTheme = isDarkTheme) {
                 Scaffold(
                     topBar = {
                         TopBar(
                             id = R.string.create_page,
-                            onToggleTheme = { isDarkTheme = !isDarkTheme },
+                            onToggleTheme = { isDarkTheme = !isDarkTheme
+                                saveTheme(context, isDarkTheme) },
                             showBackButton = true
                         )
                     },
