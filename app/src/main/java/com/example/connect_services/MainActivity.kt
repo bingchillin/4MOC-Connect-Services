@@ -7,12 +7,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -36,9 +38,7 @@ import com.example.connect_services.components.FAButton
 import com.example.connect_services.components.TopBar
 import com.example.connect_services.services.ServiceAPI
 import com.example.connect_services.ui.theme.ConnectServicesTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -144,10 +144,16 @@ fun ListItemComponent(item: ListItem, onItemClick: (ListItem) -> Unit) {
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(16.dp)
         )
-        Text(
-            text = item.idService,
-            modifier = Modifier.padding(16.dp)
-        )
+        Column {
+            Text(
+                text = item.idService,
+            )
+            Text(
+                text = item.service,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
     }
 }
 
