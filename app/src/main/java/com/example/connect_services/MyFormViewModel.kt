@@ -13,8 +13,5 @@ class MyFormViewModel: ViewModel() {
     private val _passwordValue = mutableStateOf("")
     val passwordValue: String = _passwordValue.value
 
-//    val name: LiveData<State<String>> = mutableStateOf("")// MutableLiveData()
-
-
 
 }

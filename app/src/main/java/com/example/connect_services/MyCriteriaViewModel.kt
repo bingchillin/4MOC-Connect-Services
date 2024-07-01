@@ -15,10 +15,6 @@ class MyCriteriaViewModel: ViewModel() {
 
     var specialChar: Boolean by mutableStateOf(false)
 
-    val lengthValue: Int
-        get() = _lengthValue.value.toIntOrNull() ?: 8 // default 8
-
-
     var lengthStringValue: String
         get() = _lengthValue.value
         set(value) {

@@ -1,11 +1,30 @@
 <resources>
     <string name="app_name">Connect-Services</string>
     <string name="account_list">Account list</string>
+    <string name="create_page">Account creation</string>
     <string name="edit_page">Edit user</string>
+
+    <!-- Account page -->
 
     <string name="user_id">Identifier</string>
     <string name="user_password">Password</string>
     <string name="user_service">Select a service</string>
+
+    <!-- Account Creation -->
+
+    <string name="account_already_exist">This service with this identifier already exists.</string>
+    <string name="account_added">The service %1$s has been added successfully.</string>
+    <string name="mandatory_field">This field is mandatory.</string>
+    <string name="password_critaria">Password criteria:</string>
+
+    <string name="text_longueur">Length</string>
+    <string name="text_only_maj">Uppercase only</string>
+    <string name="text_only_min">Lowercase only</string>
+    <string name="text_only_maj_min">Both</string>
+    <string name="text_digit">Digits</string>
+    <string name="text_spec_car">Special characters</string>
+    <string name="text_true">True</string>
+    <string name="text_false">False</string>
 
     <string name="button_save">Save</string>
     <string name="button_delete">Delete</string>
@@ -15,6 +34,9 @@
 
     <string name="service">Service</string>
     <string name="id">Identifier</string>
+    <string name="password">Password</string>
+
+    <!-- Account Changes -->
 
     <string name="changes_saved">Modification saved</string>
 
