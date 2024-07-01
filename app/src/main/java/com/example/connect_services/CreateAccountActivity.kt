@@ -308,18 +308,24 @@ fun MyForm(
                     buttonColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(15.dp),
                     onClick = {
-                        CreateAccountActivityFunction().onSaveButtonClick(
-                            context = context,
-                            serviceValue = serviceValue,
-                            identityValue = identityValue,
-                            passwordValue = passwordValue,
-                            onSuccess = {
-                                serviceIdIsCreate = true
-                            },
-                            onFailure = {
-                                serviceIdAlreadyExist = true
-                            }
-                        )
+                        serviceError = serviceValue.isEmpty()
+                        identityError = identityValue.isEmpty()
+                        passwordError = passwordValue.isEmpty()
+                        if (!serviceError && !identityError && !passwordError) {
+                            CreateAccountActivityFunction().onSaveButtonClick(
+                                context = context,
+                                serviceValue = serviceValue,
+                                identityValue = identityValue,
+                                passwordValue = passwordValue,
+                                onSuccess = {
+                                    serviceIdIsCreate = true
+                                },
+                                onFailure = {
+                                    serviceIdAlreadyExist = true
+                                }
+                            )
+                        }
+
                     }
                 )
 
