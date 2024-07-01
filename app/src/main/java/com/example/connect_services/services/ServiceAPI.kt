@@ -37,5 +37,9 @@ class ServiceAPI {
         println(password)
     }
 
+    fun deleteAccountUserService(accountUserDao: AccountUserDao, auid: Long) {
+        accountUserDao.deleteUserByAuid(auid)
+    }
+
 }
 

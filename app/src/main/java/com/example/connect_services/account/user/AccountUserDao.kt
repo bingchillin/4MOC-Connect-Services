@@ -37,4 +37,7 @@ interface AccountUserDao {
     @Query("UPDATE AccountUser SET Identifiant=:identifiant, Password=:password, Service=:service WHERE auid=:auid")
     fun updateUser(auid: Long, identifiant: String, password: String, service: String)
 
+    @Query("DELETE FROM AccountUser WHERE auid=:auid")
+    fun deleteUserByAuid(auid: Long)
+
 }

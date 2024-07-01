@@ -18,4 +18,11 @@
 
     <string name="service">Service</string>
     <string name="id">Identifiant</string>
+
+    <string name="changes_saved">Modifications enregistrées avec succès</string>
+
+    <string name="confirm_delete_title">Confirmation</string>
+    <string name="confirm_delete_message">Voulez-vous vraiment supprimer cet utilisateur ?</string>
+    <string name="confirm">Oui</string>
+    <string name="cancel">Non</string>
 </resources>
