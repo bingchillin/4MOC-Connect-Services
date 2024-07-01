@@ -14,11 +14,9 @@ class CreateAccountActivityFunction {
 
     fun onSaveButtonClick(
         context: Context,
-        viewModel: MyFormViewModel,
         serviceValue: String,
         identityValue: String,
         passwordValue: String,
-        criteriaViewModel: MyCriteriaViewModel,
         onSuccess: () -> Unit,
         onFailure: () -> Unit
     ) {

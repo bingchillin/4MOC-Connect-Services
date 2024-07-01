@@ -310,11 +310,9 @@ fun MyForm(
                     onClick = {
                         CreateAccountActivityFunction().onSaveButtonClick(
                             context = context,
-                            viewModel = viewModel,
                             serviceValue = serviceValue,
                             identityValue = identityValue,
                             passwordValue = passwordValue,
-                            criteriaViewModel = criteriaViewModel,
                             onSuccess = {
                                 serviceIdIsCreate = true
                             },
