@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,23 +33,54 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.connect_services.account.AppDatabase
 import com.example.connect_services.components.FAButton
 import com.example.connect_services.components.TopBar
 import com.example.connect_services.services.ServiceAPI
 import com.example.connect_services.ui.theme.ConnectServicesTheme
+import com.example.connect_services.view_models.MyCriteriaViewModel
+import com.example.connect_services.view_models.MyFormViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     private var needRefresh = false
 
+    private val viewModel: MyFormViewModel by viewModels()
+    private val criteriaViewModel: MyCriteriaViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApp()
+            val context = LocalContext.current
+            var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
+
+            val navController = rememberNavController()
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                ConnectServicesTheme(darkTheme = isDarkTheme) {
+                    NavHost(navController = navController, startDestination = "main") {
+                        composable("main") {
+                            MyApp(navController)
+                        }
+                        composable("createAccount") {
+                            CreateAccountActivityScreen(
+                                innerPadding = innerPadding,
+                                viewModel = viewModel,
+                                criteriaViewModel = criteriaViewModel,
+                                navController = navController
+                            )
+                        }
+                    }
+                }
+
+            }
+
         }
     }
 
@@ -57,7 +88,8 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         if (needRefresh) {
             setContent {
-                MyApp()
+                val navController = rememberNavController()
+                MyApp(navController)
             }
             needRefresh = false
         }
@@ -68,9 +100,16 @@ class MainActivity : ComponentActivity() {
         needRefresh = true
     }
 
+    fun isDarkTheme(context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("dark_theme", false)
+    }
+
     @Composable
-    fun MyApp() {
-        var isDarkTheme by remember { mutableStateOf(isDarkTheme(this@MainActivity)) }
+    fun MyApp(navController: NavController) {
+        val context = LocalContext.current ?: return
+
+        var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
 
         ConnectServicesTheme(darkTheme = isDarkTheme) {
             Scaffold(
@@ -79,7 +118,7 @@ class MainActivity : ComponentActivity() {
                     saveTheme(this@MainActivity, isDarkTheme)
                 }, showBackButton = false) },
                 floatingActionButton = {
-                    FAButton()
+                    FAButton(navController)
                 }
             ) { innerPadding ->
                 Greeting(

@@ -30,7 +30,7 @@ fun TopBar(id: Int, onToggleTheme: () -> Unit, showBackButton: Boolean) {
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(35.dp)
     ) {
         if (showBackButton) {
             IconButton(onClick = {

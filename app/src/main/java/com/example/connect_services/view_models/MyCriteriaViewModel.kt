@@ -1,4 +1,4 @@
-package com.example.connect_services
+package com.example.connect_services.view_models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

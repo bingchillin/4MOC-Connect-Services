@@ -1,13 +1,12 @@
 package com.example.connect_services
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,13 +45,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.connect_services.components.ButtonComponent
 import com.example.connect_services.components.TextFieldComponent
 import com.example.connect_services.components.TopBar
+import com.example.connect_services.page_account_function.CreateAccountActivityFunction
 import com.example.connect_services.ui.theme.ConnectServicesTheme
+import com.example.connect_services.view_models.MyCriteriaViewModel
+import com.example.connect_services.view_models.MyFormViewModel
+
 
 class CreateAccountActivity : ComponentActivity() {
     private val viewModel: MyFormViewModel by viewModels()
@@ -63,50 +67,69 @@ class CreateAccountActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val context = LocalContext.current
-            var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
 
-            ConnectServicesTheme(darkTheme = isDarkTheme) {
-                Scaffold(
-                    topBar = {
-                        TopBar(
-                            id = R.string.create_page,
-                            onToggleTheme = { isDarkTheme = !isDarkTheme
-                                saveTheme(context, isDarkTheme) },
-                            showBackButton = true
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "createAccount") {
+                composable("createAccount") {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize()
+                    ) { innerPadding ->
+                        CreateAccountActivityScreen(
+                            innerPadding = innerPadding,
+                            viewModel = viewModel,
+                            criteriaViewModel = criteriaViewModel,
+                            navController = navController
                         )
-                    },
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    CreateAccountActivityScreen(
-                        innerPadding = innerPadding,
-                        viewModel = viewModel,
-                        criteriaViewModel = criteriaViewModel
-                    )
+                    }
+                }
+                composable("main") {
+                    MainActivity().MyApp(navController)
                 }
             }
         }
+
     }
 }
 
 
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CreateAccountActivityScreen(innerPadding: PaddingValues, viewModel: MyFormViewModel, criteriaViewModel: MyCriteriaViewModel) {
+fun CreateAccountActivityScreen(
+    innerPadding: PaddingValues,
+    viewModel: MyFormViewModel,
+    criteriaViewModel: MyCriteriaViewModel,
+    navController: NavHostController
+) {
+    val context = LocalContext.current
+    var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
 
-    val navController = rememberNavController()
-
-    NavHost(navController, startDestination = "myForm") {
-        composable("myForm") {
+    ConnectServicesTheme(darkTheme = isDarkTheme) {
+        Scaffold(
+            topBar = {
+                TopBar(
+                    id = R.string.create_page,
+                    onToggleTheme = {
+                        isDarkTheme = !isDarkTheme
+                        saveTheme(context, isDarkTheme)
+                    },
+                    showBackButton = true
+                )
+            },
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
             MyForm(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
                 viewModel = viewModel,
-                criteriaViewModel = criteriaViewModel
+                criteriaViewModel = criteriaViewModel,
+                navController = navController
             )
         }
     }
+
+
 }
 
 
@@ -114,7 +137,8 @@ fun CreateAccountActivityScreen(innerPadding: PaddingValues, viewModel: MyFormVi
 fun MyForm(
     modifier: Modifier = Modifier,
     viewModel: MyFormViewModel,
-    criteriaViewModel: MyCriteriaViewModel
+    criteriaViewModel: MyCriteriaViewModel,
+    navController: NavHostController
 ) {
     val context = LocalContext.current
 
@@ -193,6 +217,7 @@ fun MyForm(
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
+
 
             // Identifiant Row
             Row(
@@ -300,9 +325,9 @@ fun MyForm(
                     buttonColor = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(15.dp),
                     onClick = {
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.startActivity(intent)
-                    })
+                        navController.navigate("main")
+                    }
+                )
 
                 ButtonComponent(
                     id = R.string.button_save,
@@ -441,7 +466,7 @@ fun PasswordDetail(criteriaViewModel: MyCriteriaViewModel) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = stringResource(id = R.string.text_digit), modifier = Modifier.width(85.dp))
+            Text(text = stringResource(id = R.string.text_digit), modifier = Modifier.width(100.dp))
             ExposedDropdownMenuBox(
                 expanded = isExpandedD,
                 onExpandedChange = { isExpandedD = it }
@@ -490,7 +515,7 @@ fun PasswordDetail(criteriaViewModel: MyCriteriaViewModel) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = stringResource(id = R.string.text_spec_car ), modifier = Modifier.width(150.dp))
+            Text(text = stringResource(id = R.string.text_spec_car), modifier = Modifier.width(150.dp))
             ExposedDropdownMenuBox(
                 expanded = isExpandedS,
                 onExpandedChange = { isExpandedS = it }
