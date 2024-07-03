@@ -30,6 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.activity
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.connect_services.account.AppDatabase
 import com.example.connect_services.components.ButtonComponent
@@ -50,14 +54,24 @@ class EditActivity : ComponentActivity() {
         val idService = intent.getStringExtra("idService") ?: "Default idService"
         val password = intent.getStringExtra("password") ?: "Default Password"
 
+
         setContent {
-            EditPage(auid, idService, password, service)
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "editAccount") {
+                composable("editAccount") {
+                    EditPage(auid, idService, password, service, onNavigateToMain = { navController.navigate(route = "main") })
+                }
+                activity("main") {
+                    this.activityClass = MainActivity::class
+                }
+            }
+
         }
     }
 }
 
 @Composable
-fun EditPage(auid: Long, idService: String, password: String, service: String) {
+fun EditPage(auid: Long, idService: String, password: String, service: String, onNavigateToMain: ()-> Unit) {
     val context = LocalContext.current
     var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
 
@@ -80,14 +94,15 @@ fun EditPage(auid: Long, idService: String, password: String, service: String) {
                 idService = idService,
                 password = password,
                 service = service,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
+                onNavigateToMain = onNavigateToMain
             )
         }
     }
 }
 
 @Composable
-fun EditContent(auid: Long, idService: String, password: String, service: String, modifier: Modifier = Modifier) {
+fun EditContent(auid: Long, idService: String, password: String, service: String, modifier: Modifier = Modifier, onNavigateToMain: () -> Unit) {
     val context = LocalContext.current
 
     var idServiceState by remember { mutableStateOf(idService) }
@@ -150,8 +165,7 @@ fun EditContent(auid: Long, idService: String, password: String, service: String
                     buttonColor = MaterialTheme.colorScheme.secondary,
                     modifier = modifier,
                     onClick = {
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.startActivity(intent)
+                        onNavigateToMain()
                     }
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -172,6 +186,7 @@ fun EditContent(auid: Long, idService: String, password: String, service: String
                     TextButton(onClick = {
                         _onDeleteClick(context, auid)
                         showDialog = false
+                        onNavigateToMain()
                     }) {
                         Text(text = stringResource(R.string.confirm))
                     }

@@ -1,14 +1,17 @@
 <resources>
     <string name="app_name">Connect-Services</string>
+
+    <!-- Account page -->
+
     <string name="account_list">Account list</string>
     <string name="create_page">Account creation</string>
     <string name="edit_page">Edit user</string>
 
-    <!-- Account page -->
-
     <string name="user_id">Identifier</string>
     <string name="user_password">Password</string>
     <string name="user_service">Select a service</string>
+
+    <string name="account_dont_exist">You don\'t have an Account list yet</string>
 
     <!-- Account Creation -->
 

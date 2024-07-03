@@ -13,6 +13,8 @@
     <string name="user_password">Mot de passe</string>
     <string name="user_service">Sélectionner un service</string>
 
+    <string name="account_dont_exist">"Vous n'avez pas encore de liste de Compte"</string>
+
     <!-- Account Creation -->
     <string name="account_already_exist">Ce service avec cet identifiant existe déjà.</string>
     <string name="account_added">Le service %1$s a bien été ajouté.</string>

@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -79,12 +80,12 @@ class CreateAccountActivity : ComponentActivity() {
                             innerPadding = innerPadding,
                             viewModel = viewModel,
                             criteriaViewModel = criteriaViewModel,
-                            navController = navController
+                            onNavigateToMain = { navController.navigate(route = "main") }
                         )
                     }
                 }
-                composable("main") {
-                    MainActivity().MyApp(navController)
+                activity("main") {
+                    this.activityClass = MainActivity::class
                 }
             }
         }
@@ -99,7 +100,7 @@ fun CreateAccountActivityScreen(
     innerPadding: PaddingValues,
     viewModel: MyFormViewModel,
     criteriaViewModel: MyCriteriaViewModel,
-    navController: NavHostController
+    onNavigateToMain: () -> Unit
 ) {
     val context = LocalContext.current
     var isDarkTheme by remember { mutableStateOf(isDarkTheme(context)) }
@@ -124,7 +125,7 @@ fun CreateAccountActivityScreen(
                     .padding(innerPadding),
                 viewModel = viewModel,
                 criteriaViewModel = criteriaViewModel,
-                navController = navController
+                onNavigateToMain =  onNavigateToMain
             )
         }
     }
@@ -133,12 +134,13 @@ fun CreateAccountActivityScreen(
 }
 
 
+
 @Composable
 fun MyForm(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     viewModel: MyFormViewModel,
     criteriaViewModel: MyCriteriaViewModel,
-    navController: NavHostController
+    onNavigateToMain: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -325,7 +327,7 @@ fun MyForm(
                     buttonColor = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(15.dp),
                     onClick = {
-                        navController.navigate("main")
+                        onNavigateToMain()
                     }
                 )
 

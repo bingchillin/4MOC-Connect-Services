@@ -10,12 +10,12 @@ import androidx.navigation.NavController
 import com.example.connect_services.R
 
 @Composable
-fun FAButton(navController: NavController) {
+fun FAButton(onNavigateToCreate: () -> Unit) {
     val context = LocalContext.current
 
     FloatingActionButton(
         onClick = {
-            navController.navigate("createAccount")
+            onNavigateToCreate()
         },
         content = {
             Icon(
