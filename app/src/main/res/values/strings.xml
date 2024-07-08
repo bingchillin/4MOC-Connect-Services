@@ -5,7 +5,7 @@
 
     <!-- Account page -->
 
-    <string name="account_list">Liste des Compte</string>
+    <string name="account_list">Liste des Comptes</string>
     <string name="create_page">Creation de Compte</string>
     <string name="edit_page">Modifier un utilisateur</string>
 

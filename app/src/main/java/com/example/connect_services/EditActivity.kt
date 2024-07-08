@@ -15,7 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -154,27 +160,41 @@ fun EditContent(auid: Long, idService: String, password: String, service: String
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-                ButtonComponent(
-                    id = R.string.button_delete,
-                    buttonColor = Color.Red,
-                    modifier = modifier,
-                    onClick = { showDialog = true }) // Affiche l'AlertDialog
+
+                IconButton(
+                    onClick = { showDialog = true },
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.button_delete),
+                        tint = Color.Red
+                    )
+                }// Affiche l'AlertDialog
                 Spacer(modifier = Modifier.padding(8.dp))
-                ButtonComponent(
-                    id = R.string.button_cancel,
-                    buttonColor = MaterialTheme.colorScheme.secondary,
-                    modifier = modifier,
-                    onClick = {
-                        onNavigateToMain()
-                    }
-                )
+
+                IconButton(
+                    onClick = { onNavigateToMain() },
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.button_cancel),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
                 Spacer(modifier = Modifier.padding(8.dp))
-                ButtonComponent(
-                    id = R.string.button_save,
-                    buttonColor = MaterialTheme.colorScheme.primary,
-                    modifier = modifier,
-                    onClick = { _onSaveClick(context, auid, idServiceState, passwordState, serviceState)  { isSaved = true } }
-                )
+
+                IconButton(
+                    onClick = { _onSaveClick(context, auid, idServiceState, passwordState, serviceState)  { isSaved = true } },
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Done,
+                        contentDescription = stringResource(R.string.button_save),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
 

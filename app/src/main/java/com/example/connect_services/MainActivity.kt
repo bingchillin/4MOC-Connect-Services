@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.activity
@@ -194,7 +195,9 @@ fun Greeting(modifier: Modifier = Modifier, onNavigateToEdit: (ListItem) -> Unit
                 contentAlignment = Alignment.Center,
                 modifier = modifier.fillMaxSize()
             ) {
-                Text(text = stringResource(id = R.string.account_dont_exist))
+                Text(text = stringResource(id = R.string.account_dont_exist),
+                    textAlign = TextAlign.Center)
+
             }
         } else {
             LazyColumn(modifier = modifier.fillMaxSize()) {

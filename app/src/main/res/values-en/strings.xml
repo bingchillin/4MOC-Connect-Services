@@ -3,7 +3,7 @@
 
     <!-- Account page -->
 
-    <string name="account_list">Account list</string>
+    <string name="account_list">Accounts list</string>
     <string name="create_page">Account creation</string>
     <string name="edit_page">Edit user</string>
 
